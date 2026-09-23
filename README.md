@@ -1,8 +1,15 @@
-# shcherbakov Directus extensions
+# shcherbakov Directus extensions & schema
 
-Кастомные interface-расширения для Directus-инстанса на `db.sch.com.ru`
-(контейнер `perf-directus-1`, VPS `bgm` в `~/.ssh/config`). Обслуживают сайт
-[schugo](https://github.com/zlochevsky/shcherbakov).
+Конфигурация Directus-инстанса на `db.sch.com.ru` (контейнер
+`perf-directus-1`, VPS `bgm` в `~/.ssh/config`), которая не входит в сам сайт
+[schugo](https://github.com/zlochevsky/shcherbakov): кастомные
+interface-расширения и снапшот data model. Название репозитория осталось
+от первого коммита (только расширения) — при желании можно переименовать в
+что-то вроде `shcherbakov-directus-config`, GitHub сохранит редирект со
+старого имени.
+
+Flows (`Auto perf id`, `Auto set entry id` и др.) и permissions/roles/policies
+сюда пока не входят — см. «Известные ограничения» внизу.
 
 Это **исходники**. Живая (собранная) копия лежит на сервере в
 `/var/www/sch.com.ru/perf/extensions/` — сюда, в git, `dist/` не коммитится
@@ -109,6 +116,52 @@ ssh bgm 'docker logs --since 1m perf-directus-1 2>&1 | grep -iE "loaded extensio
 - `sets_entries`: `id` вида `<sets_id>_<num с ведущими нулями до 3 знаков>_<perfs_id>`
   (Flow «Auto set entry id» на сервере — не в этом репозитории), `perfs_id`→`perfs`,
   `sets_id`→`sets`, `num` (integer).
+
+## Data model (schema snapshot)
+
+`schema/snapshot.yaml` — снимок Data Model (коллекции, поля, связи) через
+штатный `directus schema snapshot`. **Flows, permissions/roles/policies,
+dashboards, presets, translations сюда не входят** — это официальное
+ограничение команды в Directus (не наша недоработка), см. обсуждение в
+основном чате про `directus-sync` как способ закрыть и это тоже.
+
+Сам файл большой (~8000 строк) и не предназначен для ручного чтения целиком —
+он для `git diff`/истории при осознанных правках схемы через Data Model в
+Directus Studio, и как страховка на случай восстановления схемы с нуля.
+
+### Обновить снапшот (после правок схемы в Directus Studio)
+
+```sh
+ssh bgm '
+  docker exec perf-directus-1 npx directus schema snapshot -y --format yaml /tmp/schema-snapshot.yaml
+  docker cp perf-directus-1:/tmp/schema-snapshot.yaml /tmp/schema-snapshot.yaml
+  docker exec perf-directus-1 rm -f /tmp/schema-snapshot.yaml
+'
+scp bgm:/tmp/schema-snapshot.yaml schema/snapshot.yaml
+ssh bgm 'rm -f /tmp/schema-snapshot.yaml'
+git diff schema/snapshot.yaml   # посмотреть, что реально изменилось
+git add schema/snapshot.yaml && git commit -m "..." && git push
+```
+
+### Применить снапшот (восстановление / перенос схемы)
+
+**Осторожно** — `schema apply` вносит изменения в текущую схему БД, чтобы
+она стала соответствовать снапшоту. Перед применением к живой базе стоит
+сначала посмотреть diff:
+
+```sh
+docker exec perf-directus-1 npx directus schema diff /tmp/schema-snapshot.yaml
+docker exec perf-directus-1 npx directus schema apply /tmp/schema-snapshot.yaml
+```
+
+(файл снапшота сначала нужно закинуть в контейнер через `docker cp`, как при
+снятии).
+
+### Кстати
+
+Directus на сервере — 11.17.4, доступна 12.4.0 (на 9 релизов отстаём). Не
+блокирует ничего из описанного здесь, но стоит учитывать при планировании
+апгрейда — после него имеет смысл снять свежий снапшот.
 
 ## Известные ограничения / TODO
 
