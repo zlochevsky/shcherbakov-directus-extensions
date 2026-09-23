@@ -1,0 +1,26 @@
+{
+	"name": "directus-extension-setlist-editor",
+	"description": "Инлайн O2M-редактор сетлиста с автокомплитом песен по названию (для схемы events.songs_performed -> perfs -> works)",
+	"icon": "queue_music",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-custom-interface"
+	],
+	"type": "module",
+	"directus:extension": {
+		"type": "interface",
+		"path": "dist/index.js",
+		"source": "src/index.js",
+		"host": "^11.0.0 || ^12.0.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "^17.1.4",
+		"vue": "^3.5.38"
+	}
+}
