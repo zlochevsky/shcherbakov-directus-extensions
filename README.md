@@ -3,13 +3,14 @@
 Конфигурация Directus-инстанса на `db.sch.com.ru` (контейнер
 `perf-directus-1`, VPS `bgm` в `~/.ssh/config`), которая не входит в сам сайт
 [schugo](https://github.com/zlochevsky/shcherbakov): кастомные
-interface-расширения и снапшот data model. Название репозитория осталось
-от первого коммита (только расширения) — при желании можно переименовать в
-что-то вроде `shcherbakov-directus-config`, GitHub сохранит редирект со
-старого имени.
+interface-расширения, снапшот data model, Flows и модель прав доступа.
+Название репозитория осталось от первого коммита (только расширения) — при
+желании можно переименовать в что-то вроде `shcherbakov-directus-config`,
+GitHub сохранит редирект со старого имени.
 
-Flows (`Auto perf id`, `Auto set entry id` и др.) и permissions/roles/policies
-сюда пока не входят — см. «Известные ограничения» внизу.
+`directus_settings` (project name, тема, AI/mapbox API-ключи и т.п.)
+сознательно **не** экспортируется — см. раздел «Flows и права доступа»
+ниже, почему.
 
 Это **исходники**. Живая (собранная) копия лежит на сервере в
 `/var/www/sch.com.ru/perf/extensions/` — сюда, в git, `dist/` не коммитится
@@ -163,10 +164,58 @@ Directus на сервере — 11.17.4, доступна 12.4.0 (на 9 рел
 блокирует ничего из описанного здесь, но стоит учитывать при планировании
 апгрейда — после него имеет смысл снять свежий снапшот.
 
+## Flows и права доступа
+
+`flows-and-permissions/` — экспорт через API (не через `directus schema
+snapshot`, он этого не покрывает — официальное ограничение команды):
+
+- `flows.json` — все Flows вместе с их операциями (включая код `Run Script`);
+- `roles.json`, `policies.json`, `access.json` — роли, политики и связи
+  роль↔политика/пользователь↔политика;
+- `permissions.json` — правила доступа (policy × collection × action ×
+  фильтр × разрешённые поля).
+
+### Почему без `directus_settings`
+
+Проверено 2026-09-23: прогнал по всем таблицам, которые сюда попадают
+(`permissions`, `policies`, `dashboards`, `panels`, `presets`,
+`translations`), grep на `token|password|secret|bearer|api.?key` — пусто.
+Единственное место, где вообще фигурирует токен — Flow «Rebuild site on
+Directus save» (`flows.json`), и там правильно: `Bearer
+{{$env.GITHUB_DISPATCH_TOKEN}}` — ссылка на переменную окружения контейнера,
+сам токен в БД не попадает.
+
+`directus_settings` — другое дело: там есть поля вроде `ai_openai_api_key`,
+`ai_anthropic_api_key`, `ai_google_api_key`, `mapbox_key`. Сейчас все пустые,
+но, в отличие от Flows, у них нет механизма `{{$env.X}}` — если такой ключ
+когда-нибудь вписать прямо в Directus Studio (Settings), он ляжет в БД
+открытым текстом и уйдёт в git при следующем запуске экспорта. Поэтому эта
+таблица **намеренно исключена** из `export-flows-and-permissions.sh` —
+не полагаемся на то, что кто-то не забудет проверить перед коммитом, а просто
+не даём этой категории риска попасть в скрипт вообще. Если когда-нибудь
+понадобится версионировать и Settings — увеличивать эту зону риска нужно
+осознанно, отдельным решением, не походя.
+
+`access.json` содержит внутренние UUID пользователей Directus (кто на какую
+policy назначен) — не email/имена, сама таблица `directus_users` не
+экспортируется.
+
+### Обновить экспорт
+
+```sh
+./scripts/export-flows-and-permissions.sh
+git diff flows-and-permissions/   # обязательно посмотреть перед коммитом,
+                                   # особенно flows.json — там код операций
+git add flows-and-permissions/ && git commit -m "..." && git push
+```
+
 ## Известные ограничения / TODO
 
 - Нет CI — деплой полностью ручной (см. выше).
-- Flows (`Auto perf id`, `Auto set entry id`, `Auto event id` и др.) живут
-  только в БД Directus, в этот репозиторий не входят — см. обсуждение про
-  `directus-sync` для отдельной версионности конфигурации Directus за
-  пределами Data Model.
+- Восстановление (`apply`) для Flows/permissions отдельной командой не
+  предусмотрено — в отличие от `schema apply` для Data Model, штатного
+  «применить flows.json обратно» в Directus нет. Если понадобится реальный
+  restore или перенос между окружениями — это как раз тот случай, когда
+  стоит смотреть в сторону `directus-sync`, у него это встроено; наш
+  export-скрипт — только для истории/бэкапа/diff, не для промоушена между
+  окружениями.

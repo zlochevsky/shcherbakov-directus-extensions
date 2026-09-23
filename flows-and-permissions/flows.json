@@ -1,0 +1,403 @@
+[
+  {
+    "accountability": "all",
+    "color": null,
+    "date_created": "2026-09-11T16:18:30.331Z",
+    "description": "Если id не введён вручную и есть date — подставляет L<YYYY-MM-DD>",
+    "icon": "event",
+    "id": "1a42f664-5cc5-42f5-b1c3-0d6794ba5aca",
+    "name": "Auto event id",
+    "operation": "0723c1c0-4345-4445-8775-bf2e502586ad",
+    "operations": [
+      {
+        "date_created": "2026-09-11T16:18:30.685Z",
+        "flow": "1a42f664-5cc5-42f5-b1c3-0d6794ba5aca",
+        "id": "0723c1c0-4345-4445-8775-bf2e502586ad",
+        "key": "set_id",
+        "name": "Run Script",
+        "options": {
+          "code": "module.exports = async function(data) {\n  const payload = data.$trigger.payload;\n  if (!payload.id && payload.date) {\n    let id = `L${payload.date.slice(0, 10)}`;\n    if (payload.day_evening === 'дневной') {\n      id += '-1';\n    } else if (payload.day_evening === 'вечерний') {\n      id += '-2';\n    }\n    payload.id = id;\n  }\n  return payload;\n};"
+        },
+        "position_x": "19",
+        "position_y": "1",
+        "reject": null,
+        "resolve": null,
+        "type": "exec",
+        "user_created": "f8f3600f-6504-4e7f-b3d2-5a25fb4ba3a0"
+      }
+    ],
+    "options": {
+      "collections": [
+        "events"
+      ],
+      "return": "$last",
+      "scope": [
+        "items.create"
+      ],
+      "type": "filter"
+    },
+    "status": "active",
+    "trigger": "event",
+    "user_created": "f8f3600f-6504-4e7f-b3d2-5a25fb4ba3a0"
+  },
+  {
+    "accountability": "all",
+    "color": null,
+    "date_created": "2026-09-13T10:29:34.913Z",
+    "description": "Если text пустой и есть привязанное событие — требует, чтобы у события были date и town (иначе не из чего собрать текст анонса для сайта)",
+    "icon": "rule",
+    "id": "2141ad34-a71b-4c5a-ae04-009f37f1ffc4",
+    "name": "Validate empty announce needs full event",
+    "operation": "fae43682-55bc-4935-bb87-15fe6e55528a",
+    "operations": [
+      {
+        "date_created": "2026-09-13T10:29:35.948Z",
+        "flow": "2141ad34-a71b-4c5a-ae04-009f37f1ffc4",
+        "id": "ae80a29a-8406-4d2b-8495-05489cbae9a4",
+        "key": "validate",
+        "name": "Run Script",
+        "options": {
+          "code": "module.exports = async function(data) {\n  const payload = data.$trigger.payload;\n  const hasText = payload.text && String(payload.text).trim().length > 0;\n  if (hasText) return payload;\n  const eventVal = payload.event;\n  if (!eventVal) return payload;\n  let eventDate, eventTown;\n  if (typeof eventVal === 'object') {\n    eventDate = eventVal.date;\n    eventTown = eventVal.town;\n  } else {\n    const found = data.looked_up && data.looked_up[0];\n    eventDate = found && found.date;\n    eventTown = found && found.town;\n  }\n  if (!eventDate || !eventTown) {\n    throw new Error('Нельзя сохранить анонс без текста, если у привязанного события не заполнены дата и город — иначе на сайте не из чего собрать текст анонса.');\n  }\n  return payload;\n};"
+        },
+        "position_x": "55",
+        "position_y": "1",
+        "reject": null,
+        "resolve": null,
+        "type": "exec",
+        "user_created": "f8f3600f-6504-4e7f-b3d2-5a25fb4ba3a0"
+      },
+      {
+        "date_created": "2026-09-13T10:29:35.603Z",
+        "flow": "2141ad34-a71b-4c5a-ae04-009f37f1ffc4",
+        "id": "d855221d-fcea-454a-abcd-1e031e8b1927",
+        "key": "looked_up",
+        "name": "Read Data",
+        "options": {
+          "collection": "events",
+          "query": {
+            "fields": [
+              "date",
+              "town"
+            ],
+            "filter": {
+              "id": {
+                "_eq": "{{eventIdForLookup}}"
+              }
+            },
+            "limit": 1
+          }
+        },
+        "position_x": "37",
+        "position_y": "1",
+        "reject": null,
+        "resolve": "ae80a29a-8406-4d2b-8495-05489cbae9a4",
+        "type": "item-read",
+        "user_created": "f8f3600f-6504-4e7f-b3d2-5a25fb4ba3a0"
+      },
+      {
+        "date_created": "2026-09-13T10:29:35.259Z",
+        "flow": "2141ad34-a71b-4c5a-ae04-009f37f1ffc4",
+        "id": "fae43682-55bc-4935-bb87-15fe6e55528a",
+        "key": "eventIdForLookup",
+        "name": "Run Script",
+        "options": {
+          "code": "module.exports = async function(data) {\n  const eventVal = data.$trigger.payload.event;\n  return typeof eventVal === 'string' ? eventVal : null;\n};"
+        },
+        "position_x": "19",
+        "position_y": "1",
+        "reject": null,
+        "resolve": "d855221d-fcea-454a-abcd-1e031e8b1927",
+        "type": "exec",
+        "user_created": "f8f3600f-6504-4e7f-b3d2-5a25fb4ba3a0"
+      }
+    ],
+    "options": {
+      "collections": [
+        "announces"
+      ],
+      "return": "$last",
+      "scope": [
+        "items.create",
+        "items.update"
+      ],
+      "type": "filter"
+    },
+    "status": "active",
+    "trigger": "event",
+    "user_created": "f8f3600f-6504-4e7f-b3d2-5a25fb4ba3a0"
+  },
+  {
+    "accountability": "all",
+    "color": null,
+    "date_created": "2026-08-15T10:44:41.000Z",
+    "description": null,
+    "icon": "bolt",
+    "id": "8525f83b-9d75-4bfb-86c1-f888c44f80bb",
+    "name": "Rebuild site on Directus save",
+    "operation": "cadde985-d799-492b-8997-56afd413289d",
+    "operations": [
+      {
+        "date_created": "2026-08-15T10:51:33.000Z",
+        "flow": "8525f83b-9d75-4bfb-86c1-f888c44f80bb",
+        "id": "cadde985-d799-492b-8997-56afd413289d",
+        "key": "request_wi0qo",
+        "name": "Webhook / Request URL",
+        "options": {
+          "body": "{\"ref\": \"master\"}",
+          "headers": [
+            {
+              "header": "Authorization",
+              "value": "Bearer {{$env.GITHUB_DISPATCH_TOKEN}}"
+            },
+            {
+              "header": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "header": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
+          ],
+          "method": "POST",
+          "url": "https://api.github.com/repos/zlochevsky/shcherbakov/actions/workflows/static.yml/dispatches"
+        },
+        "position_x": "19",
+        "position_y": "1",
+        "reject": null,
+        "resolve": null,
+        "type": "request",
+        "user_created": "a3f49b86-1314-45c2-a8c4-0e7d321b9d0a"
+      }
+    ],
+    "options": {
+      "collections": [
+        "perfs",
+        "announces",
+        "events",
+        "works",
+        "sets",
+        "sets_entries",
+        "variants"
+      ],
+      "scope": [
+        "items.create",
+        "items.update",
+        "items.delete"
+      ],
+      "type": "action"
+    },
+    "status": "active",
+    "trigger": "event",
+    "user_created": "a3f49b86-1314-45c2-a8c4-0e7d321b9d0a"
+  },
+  {
+    "accountability": "all",
+    "color": null,
+    "date_created": "2026-08-14T15:54:52.000Z",
+    "description": "Заполняет поля year и dw при сохранении события, если в этом событии также задана точная его дата.",
+    "icon": "bolt",
+    "id": "88e29238-c27e-45b3-93c4-c6172e9a2db3",
+    "name": "Auto year and dw",
+    "operation": "72935641-d711-4cc3-9e68-97ff8b7288ed",
+    "operations": [
+      {
+        "date_created": "2026-08-14T15:56:08.000Z",
+        "flow": "88e29238-c27e-45b3-93c4-c6172e9a2db3",
+        "id": "72935641-d711-4cc3-9e68-97ff8b7288ed",
+        "key": "exec_djxop",
+        "name": "Run Script",
+        "options": {
+          "code": "module.exports = async function(data) {\n  const payload = data.$trigger.payload;\n  if (payload.date) {\n    const d = new Date(payload.date);\n    const days = [\"вс\", \"пн\", \"вт\", \"ср\", \"чт\", \"пт\", \"сб\"];\n    payload.year = d.getUTCFullYear();\n    payload.dw = days[d.getUTCDay()];\n  }\n  return payload;\n};"
+        },
+        "position_x": "19",
+        "position_y": "1",
+        "reject": null,
+        "resolve": null,
+        "type": "exec",
+        "user_created": "a3f49b86-1314-45c2-a8c4-0e7d321b9d0a"
+      }
+    ],
+    "options": {
+      "collections": [
+        "events"
+      ],
+      "return": "$last",
+      "scope": [
+        "items.create",
+        "items.update"
+      ],
+      "type": "filter"
+    },
+    "status": "active",
+    "trigger": "event",
+    "user_created": "a3f49b86-1314-45c2-a8c4-0e7d321b9d0a"
+  },
+  {
+    "accountability": "all",
+    "color": null,
+    "date_created": "2026-09-21T15:58:08.662Z",
+    "description": "конструирует id записи сета (sets_id_number_perfs_id) и number при создании",
+    "icon": "bolt",
+    "id": "d94055c3-22b0-4881-8d7d-61be0de51ca5",
+    "name": "Auto set entry id",
+    "operation": "45e3b2b9-5410-4248-9d95-d1c1bf1ac2f0",
+    "operations": [
+      {
+        "date_created": "2026-09-21T15:58:09.018Z",
+        "flow": "d94055c3-22b0-4881-8d7d-61be0de51ca5",
+        "id": "45e3b2b9-5410-4248-9d95-d1c1bf1ac2f0",
+        "key": "existing",
+        "name": "Read Data",
+        "options": {
+          "collection": "sets_entries",
+          "emitEvents": false,
+          "permissions": "$trigger",
+          "query": {
+            "fields": [
+              "num"
+            ],
+            "filter": {
+              "num": {
+                "_nnull": true
+              },
+              "sets_id": {
+                "_eq": "{{$trigger.payload.sets_id}}"
+              }
+            },
+            "limit": 1,
+            "sort": [
+              "-num"
+            ]
+          }
+        },
+        "position_x": "19",
+        "position_y": "1",
+        "reject": null,
+        "resolve": "75ba7708-cc8e-4889-8944-2fb5c421a2d5",
+        "type": "item-read",
+        "user_created": "f8f3600f-6504-4e7f-b3d2-5a25fb4ba3a0"
+      },
+      {
+        "date_created": "2026-09-21T15:58:09.360Z",
+        "flow": "d94055c3-22b0-4881-8d7d-61be0de51ca5",
+        "id": "75ba7708-cc8e-4889-8944-2fb5c421a2d5",
+        "key": "set_id_number",
+        "name": "Run Script",
+        "options": {
+          "code": "module.exports = async function(data) {\n  const payload = data.$trigger.payload;\n  const key = (v) => (v && typeof v === 'object') ? v.id : v;\n  if (!payload.num) {\n    const ex = data.existing;\n    const max = (ex && ex.length) ? (Number(ex[0].num) || 0) : 0;\n    payload.num = max + 1;\n  }\n  if (!payload.id && payload.sets_id && payload.perfs_id) {\n    const numStr = String(payload.num).padStart(3, '0');\n    payload.id = `${key(payload.sets_id)}_${numStr}_${key(payload.perfs_id)}`;\n  }\n  return payload;\n};"
+        },
+        "position_x": "37",
+        "position_y": "1",
+        "reject": null,
+        "resolve": null,
+        "type": "exec",
+        "user_created": "f8f3600f-6504-4e7f-b3d2-5a25fb4ba3a0"
+      }
+    ],
+    "options": {
+      "collections": [
+        "sets_entries"
+      ],
+      "return": "$last",
+      "scope": [
+        "items.create"
+      ],
+      "type": "filter"
+    },
+    "status": "active",
+    "trigger": "event",
+    "user_created": "f8f3600f-6504-4e7f-b3d2-5a25fb4ba3a0"
+  },
+  {
+    "accountability": "all",
+    "color": null,
+    "date_created": "2026-08-15T07:01:51.000Z",
+    "description": "конструирует id исполнения при создании",
+    "icon": "bolt",
+    "id": "e478834a-c736-436b-8e54-bb246670cd57",
+    "name": "Auto perf id",
+    "operation": "8054176e-6912-4cef-ab7c-df038ed54561",
+    "operations": [
+      {
+        "date_created": "2026-08-15T07:36:24.000Z",
+        "flow": "e478834a-c736-436b-8e54-bb246670cd57",
+        "id": "285f3cc5-9bf0-4777-be9d-3d6a956fcaf1",
+        "key": "existing",
+        "name": "Read Data",
+        "options": {
+          "collection": "perfs",
+          "emitEvents": false,
+          "permissions": "$trigger",
+          "query": {
+            "fields": [
+              "num"
+            ],
+            "filter": {
+              "events_id": {
+                "_eq": "{{$trigger.payload.events_id}}"
+              },
+              "num": {
+                "_nnull": true
+              }
+            },
+            "limit": 1,
+            "sort": [
+              "-num"
+            ]
+          }
+        },
+        "position_x": "37",
+        "position_y": "1",
+        "reject": null,
+        "resolve": "c3a0cbc7-00e7-4b17-980e-989f09af43af",
+        "type": "item-read",
+        "user_created": "a3f49b86-1314-45c2-a8c4-0e7d321b9d0a"
+      },
+      {
+        "date_created": "2026-08-15T07:03:52.000Z",
+        "flow": "e478834a-c736-436b-8e54-bb246670cd57",
+        "id": "8054176e-6912-4cef-ab7c-df038ed54561",
+        "key": "set_id",
+        "name": "Run Script",
+        "options": {
+          "code": "module.exports = async function(data) {\n  const payload = data.$trigger.payload;\n  if (!payload.id && payload.events_id && payload.works_id) {\n    payload.id = `${payload.events_id}_${payload.works_id}`;\n  }\n  return payload;\n};"
+        },
+        "position_x": "19",
+        "position_y": "1",
+        "reject": null,
+        "resolve": "285f3cc5-9bf0-4777-be9d-3d6a956fcaf1",
+        "type": "exec",
+        "user_created": "a3f49b86-1314-45c2-a8c4-0e7d321b9d0a"
+      },
+      {
+        "date_created": "2026-08-15T07:36:24.000Z",
+        "flow": "e478834a-c736-436b-8e54-bb246670cd57",
+        "id": "c3a0cbc7-00e7-4b17-980e-989f09af43af",
+        "key": "set_number",
+        "name": "Run Script",
+        "options": {
+          "code": "module.exports = async function(data) {\n  const payload = data.set_id; // результат первого скрипта — уже с id\n  if (!payload.num) {\n    const existing = data.existing;\n    const max = (existing && existing.length) ? (existing[0].num || 0) : 0;\n    payload.num = max + 1;\n  }\n  return payload;\n};"
+        },
+        "position_x": "55",
+        "position_y": "1",
+        "reject": null,
+        "resolve": null,
+        "type": "exec",
+        "user_created": "a3f49b86-1314-45c2-a8c4-0e7d321b9d0a"
+      }
+    ],
+    "options": {
+      "collections": [
+        "perfs"
+      ],
+      "return": "$last",
+      "scope": [
+        "items.create"
+      ],
+      "type": "filter"
+    },
+    "status": "active",
+    "trigger": "event",
+    "user_created": "a3f49b86-1314-45c2-a8c4-0e7d321b9d0a"
+  }
+]

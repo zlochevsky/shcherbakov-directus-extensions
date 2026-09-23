@@ -1,0 +1,86 @@
+[
+  {
+    "id": "2b605b30-c503-4830-9b34-2d4554e87704",
+    "policy": "bb49a267-541a-46aa-91df-6410fb40e033",
+    "role": "df5fe356-33a4-482c-9eb3-49fb3f9f7bcd",
+    "sort": "1",
+    "user": null
+  },
+  {
+    "id": "f470f6d3-6db3-428f-a1f6-3b7c0c0854b5",
+    "policy": "9cfcc8b1-447f-430c-abf3-b520e65ef49f",
+    "role": "b86d9d65-2beb-4b6c-9951-3ec819dfb102",
+    "sort": "1",
+    "user": null
+  },
+  {
+    "id": "eede050d-4c00-46eb-8f13-62dacb94b9d8",
+    "policy": "9cfcc8b1-447f-430c-abf3-b520e65ef49f",
+    "role": null,
+    "sort": "1",
+    "user": "f8f3600f-6504-4e7f-b3d2-5a25fb4ba3a0"
+  },
+  {
+    "id": "2002092e-adee-4676-90e6-c2b84f1ee819",
+    "policy": "abf8a154-5b1c-4a46-ac9c-7300570f4f17",
+    "role": null,
+    "sort": "1",
+    "user": null
+  },
+  {
+    "id": "a9a87c63-2d57-4a89-85da-9026fd090901",
+    "policy": "7a949c6a-bad5-40cb-ba23-12251eaa7a3b",
+    "role": "79473d73-e9b6-46b0-8a03-b609e3adcefc",
+    "sort": "1",
+    "user": null
+  },
+  {
+    "id": "28f16ce1-b10e-4b7d-ad05-6664c521ed13",
+    "policy": "7a949c6a-bad5-40cb-ba23-12251eaa7a3b",
+    "role": null,
+    "sort": "1",
+    "user": "12ee475c-ffac-4331-9c0d-b04284164de2"
+  },
+  {
+    "id": "1b4f5ce2-f4af-4cc0-9c20-558525d05744",
+    "policy": "b90f6965-a58e-4f41-8df3-4c902c23ddc0",
+    "role": "1db1c9ec-ce65-4b0d-a39e-35f7310962f0",
+    "sort": "1",
+    "user": null
+  },
+  {
+    "id": "e36c1518-0b54-4ee0-9fae-91e687c08eae",
+    "policy": "b90f6965-a58e-4f41-8df3-4c902c23ddc0",
+    "role": null,
+    "sort": "1",
+    "user": "a7554d2e-ef2f-4fcc-87a9-a04c08e89475"
+  },
+  {
+    "id": "ebf8406a-2479-4bcf-a38e-5e0dcadd1cdb",
+    "policy": "7a949c6a-bad5-40cb-ba23-12251eaa7a3b",
+    "role": null,
+    "sort": "1",
+    "user": "d3682d2f-74a7-4f74-a209-87252be9a62a"
+  },
+  {
+    "id": "57963686-410f-44b5-a6ae-e68d5c3bf9d1",
+    "policy": "9cfcc8b1-447f-430c-abf3-b520e65ef49f",
+    "role": "5e740eae-40be-4f21-b30b-2a3acae0aa50",
+    "sort": null,
+    "user": null
+  },
+  {
+    "id": "35333639-1e06-4d96-8b53-368a16d60c25",
+    "policy": "aa447fc5-75e8-4892-be84-fb258ebb189e",
+    "role": "4f8d247e-edc7-4625-a74e-cefeed2b8f82",
+    "sort": null,
+    "user": null
+  },
+  {
+    "id": "af1cb70b-5c86-48a9-a918-9c67437eac07",
+    "policy": "b90f6965-a58e-4f41-8df3-4c902c23ddc0",
+    "role": null,
+    "sort": null,
+    "user": "56532f0a-baee-4bd8-b840-f075de2b76c5"
+  }
+]

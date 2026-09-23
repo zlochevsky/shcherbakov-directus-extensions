@@ -1,0 +1,90 @@
+[
+  {
+    "children": [],
+    "description": "роль пользователя с доступом на чтение",
+    "icon": "supervised_user_circle",
+    "id": "1db1c9ec-ce65-4b0d-a39e-35f7310962f0",
+    "name": "ReadOnlyUser",
+    "parent": null,
+    "policies": [
+      "1b4f5ce2-f4af-4cc0-9c20-558525d05744"
+    ],
+    "users": [
+      "56532f0a-baee-4bd8-b840-f075de2b76c5",
+      "a7554d2e-ef2f-4fcc-87a9-a04c08e89475"
+    ]
+  },
+  {
+    "children": [],
+    "description": "ведет базы концертов, логи, аннонсы, каталоги песен и прочая",
+    "icon": "supervised_user_circle",
+    "id": "4f8d247e-edc7-4625-a74e-cefeed2b8f82",
+    "name": "content editor",
+    "parent": null,
+    "policies": [
+      "35333639-1e06-4d96-8b53-368a16d60c25"
+    ],
+    "users": [
+      "230d6bf3-225e-4975-b21a-457b395d73d6",
+      "a7a8af2c-4d72-4e34-b6fa-a10c9b5a578e"
+    ]
+  },
+  {
+    "children": [],
+    "description": "$t:admin_description",
+    "icon": "verified",
+    "id": "5e740eae-40be-4f21-b30b-2a3acae0aa50",
+    "name": "Administrator",
+    "parent": null,
+    "policies": [
+      "57963686-410f-44b5-a6ae-e68d5c3bf9d1"
+    ],
+    "users": [
+      "259063ee-c90c-4373-9a4c-9afa59a4ac18",
+      "a3f49b86-1314-45c2-a8c4-0e7d321b9d0a"
+    ]
+  },
+  {
+    "children": [],
+    "description": "Read-only mode role for API Token, that gets data from DB for the Shcherbakov website",
+    "icon": "chrome_reader_mode",
+    "id": "79473d73-e9b6-46b0-8a03-b609e3adcefc",
+    "name": "ReadOnlyAPI",
+    "parent": null,
+    "policies": [
+      "a9a87c63-2d57-4a89-85da-9026fd090901"
+    ],
+    "users": [
+      "12ee475c-ffac-4331-9c0d-b04284164de2",
+      "d3682d2f-74a7-4f74-a209-87252be9a62a"
+    ]
+  },
+  {
+    "children": [],
+    "description": "API with Read and Write acess",
+    "icon": "api",
+    "id": "b86d9d65-2beb-4b6c-9951-3ec819dfb102",
+    "name": "ReadWriteAPI",
+    "parent": null,
+    "policies": [
+      "f470f6d3-6db3-428f-a1f6-3b7c0c0854b5"
+    ],
+    "users": [
+      "f8f3600f-6504-4e7f-b3d2-5a25fb4ba3a0"
+    ]
+  },
+  {
+    "children": [],
+    "description": null,
+    "icon": "archive",
+    "id": "df5fe356-33a4-482c-9eb3-49fb3f9f7bcd",
+    "name": "AnnouncesArchiverAPI",
+    "parent": null,
+    "policies": [
+      "2b605b30-c503-4830-9b34-2d4554e87704"
+    ],
+    "users": [
+      "6a52c7ad-1133-4da1-8bf1-11fa13607b21"
+    ]
+  }
+]
