@@ -170,6 +170,32 @@ collections:
       versioning: false
     schema:
       name: cycles_entries
+  - collection: disk_formats
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: disk_formats
+      color: null
+      display_template: '{{full}}'
+      group: null
+      hidden: false
+      icon: album
+      item_duplication_fields: null
+      note: >-
+        форматы дисков и кассет (Audio CD, MP3, Digital album, Аудиокассета…):
+        ключ, короткая и полная подпись, порядок в каталоге
+      preview_url: null
+      singleton: false
+      sort: null
+      sort_field: sort
+      translations: null
+      unarchive_value: null
+      versioning: false
+    schema:
+      name: disk_formats
   - collection: events
     meta:
       accountability: all
@@ -2528,6 +2554,166 @@ fields:
       max_length: 255
       numeric_precision: null
       numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: disk_formats
+    field: id
+    type: string
+    meta:
+      collection: disk_formats
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: false
+      interface: input
+      note: 'ключ: латиницей, используется в CSS-классе значка (cd, mp3, da, mc)'
+      options: null
+      readonly: false
+      required: true
+      searchable: true
+      sort: '1'
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: disk_formats
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: false
+      is_unique: true
+      is_indexed: false
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: disk_formats
+    field: short
+    type: string
+    meta:
+      collection: disk_formats
+      conditions: null
+      display: null
+      display_options: null
+      field: short
+      group: null
+      hidden: false
+      interface: input
+      note: короткая подпись для значка в каталоге
+      options: null
+      readonly: false
+      required: true
+      searchable: true
+      sort: '2'
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: short
+      table: disk_formats
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: disk_formats
+    field: full
+    type: string
+    meta:
+      collection: disk_formats
+      conditions: null
+      display: null
+      display_options: null
+      field: full
+      group: null
+      hidden: false
+      interface: input
+      note: полная подпись (подсказка, страница диска)
+      options: null
+      readonly: false
+      required: true
+      searchable: true
+      sort: '3'
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: full
+      table: disk_formats
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: disk_formats
+    field: sort
+    type: integer
+    meta:
+      collection: disk_formats
+      conditions: null
+      display: null
+      display_options: null
+      field: sort
+      group: null
+      hidden: true
+      interface: input
+      note: порядок групп в каталоге
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: '4'
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: sort
+      table: disk_formats
+      data_type: integer
+      default_value: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
       is_nullable: true
       is_unique: false
       is_indexed: false
@@ -6038,6 +6224,73 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: sets
+    field: format
+    type: string
+    meta:
+      collection: sets
+      conditions: null
+      display: related-values
+      display_options:
+        template: '{{full}}'
+      field: format
+      group: null
+      hidden: false
+      interface: select-dropdown-m2o
+      note: 'формат: Audio CD, MP3, Digital album, аудиокассета…'
+      options:
+        template: '{{full}}'
+      readonly: false
+      required: false
+      searchable: true
+      sort: '1511'
+      special:
+        - m2o
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: format
+      table: sets
+      data_type: character varying
+      default_value: cd
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: disk_formats
+      foreign_key_column: id
+  - collection: sets
+    field: entries
+    type: alias
+    meta:
+      collection: sets
+      conditions: null
+      display: null
+      display_options: null
+      field: entries
+      group: null
+      hidden: false
+      interface: album-tracklist
+      note: 'треклист: исполнения, входящие в альбом'
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: '15111'
+      special:
+        - o2m
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: sets
     field: id
     type: text
     meta:
@@ -6400,8 +6653,8 @@ fields:
       is_generated: false
       generation_expression: null
       has_auto_increment: false
-      foreign_key_table: sets
-      foreign_key_column: id
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: sets_entries
     field: num
     type: integer
@@ -6433,6 +6686,52 @@ fields:
       max_length: null
       numeric_precision: 32
       numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: sets_entries
+    field: side
+    type: string
+    meta:
+      collection: sets_entries
+      conditions: null
+      display: null
+      display_options: null
+      field: side
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        allowNone: true
+        choices:
+          - text: A
+            value: A
+          - text: B
+            value: B
+      readonly: false
+      required: false
+      searchable: true
+      sort: '411'
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: side
+      table: sets_entries
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
       is_nullable: true
       is_unique: false
       is_indexed: false
@@ -8026,6 +8325,27 @@ relations:
       constraint_name: perfs_performers_1_perfs_id_fkey
       on_update: NO ACTION
       on_delete: SET NULL
+  - collection: sets
+    field: format
+    related_collection: disk_formats
+    meta:
+      junction_field: null
+      many_collection: sets
+      many_field: format
+      one_allowed_collections: null
+      one_collection: disk_formats
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: sets
+      column: format
+      foreign_key_table: disk_formats
+      foreign_key_column: id
+      constraint_name: sets_format_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
   - collection: sets_entries
     field: perfs_id
     related_collection: perfs
@@ -8058,16 +8378,8 @@ relations:
       one_collection: sets
       one_collection_field: null
       one_deselect_action: nullify
-      one_field: null
+      one_field: entries
       sort_field: null
-    schema:
-      table: sets_entries
-      column: sets_id
-      foreign_key_table: sets
-      foreign_key_column: id
-      constraint_name: sets_entries_sets_id_fkey
-      on_update: NO ACTION
-      on_delete: SET NULL
   - collection: statements_works
     field: works_id
     related_collection: works

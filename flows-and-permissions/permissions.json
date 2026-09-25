@@ -1558,6 +1558,78 @@
   },
   {
     "action": "read",
+    "collection": "disk_formats",
+    "fields": [
+      "*"
+    ],
+    "id": "154",
+    "permissions": {},
+    "policy": "7a949c6a-bad5-40cb-ba23-12251eaa7a3b",
+    "presets": null,
+    "validation": {}
+  },
+  {
+    "action": "read",
+    "collection": "disk_formats",
+    "fields": [
+      "*"
+    ],
+    "id": "155",
+    "permissions": {},
+    "policy": "b90f6965-a58e-4f41-8df3-4c902c23ddc0",
+    "presets": null,
+    "validation": {}
+  },
+  {
+    "action": "create",
+    "collection": "disk_formats",
+    "fields": [
+      "*"
+    ],
+    "id": "156",
+    "permissions": {},
+    "policy": "aa447fc5-75e8-4892-be84-fb258ebb189e",
+    "presets": null,
+    "validation": {}
+  },
+  {
+    "action": "read",
+    "collection": "disk_formats",
+    "fields": [
+      "*"
+    ],
+    "id": "157",
+    "permissions": {},
+    "policy": "aa447fc5-75e8-4892-be84-fb258ebb189e",
+    "presets": null,
+    "validation": {}
+  },
+  {
+    "action": "update",
+    "collection": "disk_formats",
+    "fields": [
+      "*"
+    ],
+    "id": "158",
+    "permissions": {},
+    "policy": "aa447fc5-75e8-4892-be84-fb258ebb189e",
+    "presets": null,
+    "validation": {}
+  },
+  {
+    "action": "delete",
+    "collection": "disk_formats",
+    "fields": [
+      "*"
+    ],
+    "id": "159",
+    "permissions": {},
+    "policy": "aa447fc5-75e8-4892-be84-fb258ebb189e",
+    "presets": null,
+    "validation": {}
+  },
+  {
+    "action": "read",
     "collection": "directus_collections",
     "fields": [
       "*"
